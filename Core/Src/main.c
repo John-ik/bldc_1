@@ -215,7 +215,6 @@ void BLDC_set_speed (uint16_t speed_){
   if (speed_ > max_speed) speed_ = max_speed;
   BLDC_start();
   speed = speed_;
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_ALL, speed_);
 }
 
 void BLDC_toggle_direction (){
