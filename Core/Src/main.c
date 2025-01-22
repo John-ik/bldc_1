@@ -124,22 +124,22 @@ void step_0 (){
 
 }
 void step_1 (){
-  set_A_plus(); set_B_minus(); set_C_zero();
+  set_C_zero(); set_A_plus(); set_B_minus(); 
 }
 void step_2 (){
   set_A_zero(); set_B_plus(); set_C_minus();
 }
 void step_3 (){
-  set_A_plus(); set_B_zero(); set_C_minus();
+  set_B_zero(); set_A_plus(); set_C_minus();
 }
 void step_4 (){
-  set_A_minus(); set_B_zero(); set_C_plus();
+  set_B_zero(); set_A_minus(); set_C_plus();
 }
 void step_5 (){
   set_A_zero(); set_B_minus(); set_C_plus();
 }
 void step_6 (){
-  set_A_minus(); set_B_plus(); set_C_zero();
+  set_C_zero(); set_A_minus(); set_B_plus();
 }
 // for situation when all halls 1 
 void step_7 (){
