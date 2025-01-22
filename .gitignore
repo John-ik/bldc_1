@@ -1,0 +1,7 @@
+.vscode
+build
+cmake
+CMakeFiles
+Startup
+Drivers
+firmware.bin
