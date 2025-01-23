@@ -92,6 +92,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   BLDC_init();
+  uint32_t timer = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,17 +100,30 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    BLDC_forward(500);
-    HAL_Delay(2000);
-    BLDC_forward(200);
-    HAL_Delay(2000);
-    BLDC_hard_stop();
-    HAL_Delay(2000);
-    BLDC_forward(200);
-    HAL_Delay(2000);
-    BLDC_backward(500);
-    HAL_Delay(2000);
+
     /* USER CODE BEGIN 3 */
+    
+    if (HAL_GetTick() - timer < 2000){
+      BLDC_forward(300);
+    } else
+    if (HAL_GetTick() - timer < 4000){
+      BLDC_forward(700);
+    } else
+    if (HAL_GetTick() - timer < 6000){
+      BLDC_hard_stop();
+    } else
+    if (HAL_GetTick() - timer < 8000){
+      BLDC_backward(300);
+    } else
+    if (HAL_GetTick() - timer < 10000){
+      BLDC_backward(700);
+    } else
+    if (HAL_GetTick() - timer < 12000){
+      BLDC_soft_stop();
+    } else {
+      timer = HAL_GetTick();
+    }
+    
   }
   /* USER CODE END 3 */
 }

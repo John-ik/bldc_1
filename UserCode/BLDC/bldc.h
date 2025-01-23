@@ -4,8 +4,12 @@
 #include "main.h"
 
 // ==================== CONFIG ====================
-#define BLDC_TIM TIM1
-#define BLDC_htim htim1
+#define BLDC_TIM_PWM TIM1
+#define BLDC_htim_PWM htim1
+
+#define BLDC_TIM TIM2
+#define BLDC_htim htim2
+#define BLDC_COUNTER 100 // every BLDC_TIMES times speed++ in BLDC_tick  
 
 #define BLDC_HALL_A_GPIO_Port hall_A_GPIO_Port
 #define BLDC_HALL_B_GPIO_Port hall_B_GPIO_Port
@@ -51,6 +55,8 @@ void BLDC_hard_stop ();
 // set run state
 void BLDC_start ();
 
+// MAIN. run every iteration of infty loop
+void BLDC_tick();
 
 // @param speed up for *TIM1 -> Counter Period* `TIM1->ARR`, but available only 88%
 void BLDC_set_speed (uint16_t speed_);
@@ -62,3 +68,6 @@ void BLDC_set_direction (uint8_t direction);
 void BLDC_forward (uint16_t speed);
 // run backward with speed (limited 88%) 
 void BLDC_backward (uint16_t speed);
+
+long map(long x, long in_min, long in_max, long out_min, long out_max);
+
