@@ -96,11 +96,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    BLDC_forward(5000);
   while (1)
   {
     /* USER CODE END WHILE */
-
+    BLDC_forward(500);
+    HAL_Delay(2000);
+    BLDC_forward(200);
+    HAL_Delay(2000);
+    BLDC_hard_stop();
+    HAL_Delay(2000);
+    BLDC_forward(200);
+    HAL_Delay(2000);
+    BLDC_backward(500);
+    HAL_Delay(2000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
