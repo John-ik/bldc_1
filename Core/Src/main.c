@@ -59,8 +59,8 @@ BLDC_Run bldc_run = BLDC_SOFT_STOP;
 
 
 // Must be != 
-// If A = 0, B = 1, C = 2 so 0bCBA 
-uint8_t hall_A_pos = 0, hall_B_pos = 1, hall_C_pos = 2;   
+// If A = 0, B = 1, C = 2 so hall state = 0bCBA 
+uint8_t hall_A_pos = 1, hall_B_pos = 0, hall_C_pos = 2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -267,25 +267,18 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   BLDC_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+    BLDC_forward(5000);
   while (1)
   {
     /* USER CODE END WHILE */
-    BLDC_forward(5000);
-    HAL_Delay(2000);
-    BLDC_forward(1000);
-    HAL_Delay(2000);
-    BLDC_hard_stop();
-    HAL_Delay(2000);
-    BLDC_backward(1000);
-    HAL_Delay(2000);
-    BLDC_backward(10000);
-    HAL_Delay(2000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
