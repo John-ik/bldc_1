@@ -29,7 +29,7 @@
 #define BLDC_HALL_B_pos 0
 #define BLDC_HALL_C_pos 2
 
-// ==================== END CONFIG ====================
+// ==================== TYPEDEF ====================
 
 typedef enum {
     BLDC_SOFT_STOP = 0,
@@ -38,24 +38,27 @@ typedef enum {
 } BLDC_Run;
 
 
+// ==================== API ====================
+
+// initialize pwm channels on timer
 void BLDC_init();
-
+// set state. May be used for stop on next hall step   
 void BLDC_set_run (BLDC_Run state);
-
+// soft stop - smooth  
 void BLDC_soft_stop ();
-
+// hard stop - force of brake depend on current speed 
 void BLDC_hard_stop ();
-
+// set run state
 void BLDC_start ();
 
 
 // @param speed up for *TIM1 -> Counter Period* `TIM1->ARR`, but available only 88%
 void BLDC_set_speed (uint16_t speed_);
-
+// toggle direction
 void BLDC_toggle_direction ();
 // @param direction: 1 - forward, 0 - backward
 void BLDC_set_direction (uint8_t direction);
-
+// run forward with speed (limited 88%)
 void BLDC_forward (uint16_t speed);
-
+// run backward with speed (limited 88%) 
 void BLDC_backward (uint16_t speed);

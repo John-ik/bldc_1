@@ -1,7 +1,7 @@
 #include "bldc.h"
 
 #include "tim.h"
-#include "gpio.h"
+
 
 
 uint8_t hall_state;
@@ -16,10 +16,7 @@ uint8_t read_halls(){
       |  (HAL_GPIO_ReadPin(BLDC_HALL_A_GPIO_Port, BLDC_HALL_A_Pin) << BLDC_HALL_A_pos);
 }
 
-/* 
-@brief stop channel to set zero of phase
-@param channel BLDC_PHASE_{A,B,C}
- */
+
 void set_A_zero () {
   BLDC_TIM->CCR1 = 0;
 }
@@ -29,9 +26,8 @@ void set_B_zero () {
 void set_C_zero () {
   BLDC_TIM->CCR3 = 0;
 }
-/* 
 
- */
+
 void set_A_plus (){
   HAL_GPIO_WritePin(BLDC_IN_A_GPIO_Port, BLDC_IN_A_Pin, forward_dir);
   BLDC_TIM->CCR1 = speed;
@@ -45,6 +41,7 @@ void set_C_plus (){
   BLDC_TIM->CCR3 = speed;
 }
 
+
 void set_A_minus (){
   HAL_GPIO_WritePin(BLDC_IN_A_GPIO_Port, BLDC_IN_A_Pin, forward_dir ^ 1);
   BLDC_TIM->CCR1 = speed;
@@ -57,6 +54,7 @@ void set_C_minus (){
   HAL_GPIO_WritePin(BLDC_IN_C_GPIO_Port, BLDC_IN_C_Pin, forward_dir ^ 1);
   BLDC_TIM->CCR3 = speed;
 }
+
 
 // for situation when all halls 0
 void step_0 (){
