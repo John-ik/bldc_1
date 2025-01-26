@@ -9,17 +9,35 @@ uint8_t forward_dir = 1;
 uint16_t speed = 0, target_speed = 0, max_speed = 8800;
 BLDC_Run bldc_run = BLDC_SOFT_STOP;
 
-uint8_t hall_A_pos = BLDC_HALL_A_pos, hall_B_pos = BLDC_HALL_B_pos, hall_C_pos = BLDC_HALL_C_pos; 
+uint8_t mask_halls_pos[2][3] = {
+  {BLDC_HALL_A_pos, BLDC_HALL_B_pos, BLDC_HALL_C_pos},
+  {BLDC_HALL_A_pos, BLDC_HALL_C_pos, BLDC_HALL_B_pos}
+};
+uint8_t triplet;
+struct {
+  uint8_t a, b, c;
+} hall_pos;
 
+// set next position combination 
+// combination is looped
 void next_hall_pos_combination (){
-  uint8_t a = (hall_A_pos << 2); 
+  if (++triplet == 2) triplet = 0; // loop 0-1 value
+  // loop increment 
+    if (++mask_halls_pos[triplet][0] == 3) mask_halls_pos[triplet][0] = 0; // loop 0-2 value
+    if (++mask_halls_pos[triplet][1] == 3) mask_halls_pos[triplet][1] = 0; // loop 0-2 value
+    if (++mask_halls_pos[triplet][2] == 3) mask_halls_pos[triplet][2] = 0; // loop 0-2 value
+
+  // set current combination
+  hall_pos.a = mask_halls_pos[triplet][0];
+  hall_pos.b = mask_halls_pos[triplet][1];
+  hall_pos.c = mask_halls_pos[triplet][2];
 }
 
 
 uint8_t read_halls(){
-  return (HAL_GPIO_ReadPin(BLDC_HALL_C_GPIO_Port, BLDC_HALL_C_Pin) << hall_C_pos)
-      |  (HAL_GPIO_ReadPin(BLDC_HALL_B_GPIO_Port, BLDC_HALL_B_Pin) << hall_B_pos)
-      |  (HAL_GPIO_ReadPin(BLDC_HALL_A_GPIO_Port, BLDC_HALL_A_Pin) << hall_A_pos);
+  return (HAL_GPIO_ReadPin(BLDC_HALL_C_GPIO_Port, BLDC_HALL_C_Pin) << hall_pos.c)
+      |  (HAL_GPIO_ReadPin(BLDC_HALL_B_GPIO_Port, BLDC_HALL_B_Pin) << hall_pos.b)
+      |  (HAL_GPIO_ReadPin(BLDC_HALL_A_GPIO_Port, BLDC_HALL_A_Pin) << hall_pos.a);
 }
 
 // uint8_t read_halls_opt (){
