@@ -9,11 +9,17 @@ uint8_t forward_dir = 1;
 uint16_t speed = 0, target_speed = 0, max_speed = 8800;
 BLDC_Run bldc_run = BLDC_SOFT_STOP;
 
+uint8_t hall_A_pos = BLDC_HALL_A_pos, hall_B_pos = BLDC_HALL_B_pos, hall_C_pos = BLDC_HALL_C_pos; 
+
+void next_hall_pos_combination (){
+  uint8_t a = (hall_A_pos << 2); 
+}
+
 
 uint8_t read_halls(){
-  return (HAL_GPIO_ReadPin(BLDC_HALL_C_GPIO_Port, BLDC_HALL_C_Pin) << BLDC_HALL_C_pos)
-      |  (HAL_GPIO_ReadPin(BLDC_HALL_B_GPIO_Port, BLDC_HALL_B_Pin) << BLDC_HALL_B_pos)
-      |  (HAL_GPIO_ReadPin(BLDC_HALL_A_GPIO_Port, BLDC_HALL_A_Pin) << BLDC_HALL_A_pos);
+  return (HAL_GPIO_ReadPin(BLDC_HALL_C_GPIO_Port, BLDC_HALL_C_Pin) << hall_C_pos)
+      |  (HAL_GPIO_ReadPin(BLDC_HALL_B_GPIO_Port, BLDC_HALL_B_Pin) << hall_B_pos)
+      |  (HAL_GPIO_ReadPin(BLDC_HALL_A_GPIO_Port, BLDC_HALL_A_Pin) << hall_A_pos);
 }
 
 // uint8_t read_halls_opt (){
