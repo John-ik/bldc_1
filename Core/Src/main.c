@@ -111,27 +111,10 @@ int main(void)
     /* USER CODE BEGIN 3 */
     adc = (uint16_t) HAL_ADC_GetValue(&hadc1);
     
-    if (HAL_GetTick() - timer < 2000){
-      BLDC_forward(300);
-    } else
-    if (HAL_GetTick() - timer < 4000){
-      BLDC_forward(700);
-    } else
-    if (HAL_GetTick() - timer < 6000){
-      BLDC_hard_stop();
-    } else
-    if (HAL_GetTick() - timer < 8000){
-      BLDC_backward(300);
-    } else
-    if (HAL_GetTick() - timer < 10000){
-      BLDC_backward(700);
-    } else
-    if (HAL_GetTick() - timer < 12000){
-      BLDC_soft_stop();
-    } else {
-      timer = HAL_GetTick();
-    }
-    
+    uint16_t speed = map(adc, 0, 4096, 0, BLDC_get_max_speed());
+    BLDC_set_speed(speed);
+
+    HAL_Delay(50);
   }
   /* USER CODE END 3 */
 }
