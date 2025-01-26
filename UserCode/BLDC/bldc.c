@@ -177,6 +177,11 @@ void BLDC_init(){
 
 }
 
+// use after `BLDC_init`
+uint16_t BLDC_get_max_speed(){
+  return max_speed;
+}
+
 void BLDC_set_run (BLDC_Run state){
   if (bldc_run == state) return;
   bldc_run = state;

@@ -46,6 +46,8 @@ typedef enum {
 
 // initialize pwm channels on timer
 void BLDC_init();
+// use after `BLDC_init`
+uint16_t BLDC_get_max_speed();
 // set state. May be used for stop on next hall step   
 void BLDC_set_run (BLDC_Run state);
 // soft stop - smooth  
