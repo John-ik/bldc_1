@@ -20,7 +20,7 @@ struct {
 
 // set next position combination 
 // combination is looped
-void next_hall_pos_combination (){
+void BLDC_next_hall_pos_combination (){
   if (++triplet == 2) triplet = 0; // loop 0-1 value
   // loop increment 
     if (++mask_halls_pos[triplet][0] == 3) mask_halls_pos[triplet][0] = 0; // loop 0-2 value

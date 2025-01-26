@@ -46,7 +46,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+// adc
 uint16_t adc = 0;
+
+// button
+uint8_t flag_button = 1;
+uint32_t button_timer = 0; 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,7 +104,6 @@ int main(void)
   HAL_ADC_Start(&hadc1);
 
 
-  uint32_t timer = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,6 +117,20 @@ int main(void)
     
     uint16_t speed = map(adc, 0, 4096, 0, BLDC_get_max_speed());
     BLDC_set_speed(speed);
+
+    // button
+    if(HAL_GPIO_ReadPin(button_combination_GPIO_Port, button_combination_Pin) == GPIO_PIN_RESET && flag_button) // подставить свой пин
+    {
+      // действие на нажатие
+      BLDC_next_hall_pos_combination();
+
+      flag_button = 0;
+      button_timer = HAL_GetTick();
+    }
+    if(!flag_button && (HAL_GetTick() - button_timer) > 300)
+    {
+      flag_button = 1;
+    }
 
     HAL_Delay(50);
   }

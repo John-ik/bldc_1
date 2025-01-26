@@ -71,5 +71,8 @@ void BLDC_forward (uint16_t speed);
 // run backward with speed (limited 88%) 
 void BLDC_backward (uint16_t speed);
 
+// set next position of looped combination
+void BLDC_next_hall_pos_combination ();
+
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 
