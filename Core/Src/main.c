@@ -62,7 +62,28 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+typedef uint16_t filter_data_t;
+typedef uint32_t filter_data_size_t;
 
+/**
+ * @brief init as `{0}`
+ */
+typedef struct {
+    filter_data_t buf[3];
+    filter_data_size_t indx;
+} filter_median3_t;
+
+
+/**
+ * @brief Median filter. Select average from stored 2 values and new one
+ * @param data init as `{0}`
+ */
+filter_data_t filter_median3 (filter_median3_t* data, filter_data_t new_data){
+    data->buf[data->indx] = new_data;
+    if (++data->indx >= 3) data->indx = 0;
+    filter_data_t a = data->buf[0], b = data->buf[1], c = data->buf[2];
+    return (a < b) ? ((b < c) ? b : ((c < a) ? a : c)) : ((a < c) ? a : ((c < b) ? b : c));
+}
 /* USER CODE END 0 */
 
 /**
@@ -103,6 +124,8 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start(&hadc1);
 
+  filter_data_t filter = {0};
+
 
   /* USER CODE END 2 */
 
@@ -113,7 +136,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    adc = (uint16_t) HAL_ADC_GetValue(&hadc1);
+    adc = filter_median3(&filter, (uint16_t) HAL_ADC_GetValue(&hadc1));
     
     uint16_t speed = map(adc, 0, 4096, 0, BLDC_get_max_speed());
     BLDC_set_speed(speed);
