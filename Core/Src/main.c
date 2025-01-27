@@ -124,7 +124,7 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start(&hadc1);
 
-  filter_data_t filter = {0};
+  filter_median3_t filter = {0};
 
 
   /* USER CODE END 2 */
