@@ -158,7 +158,7 @@ int main(void)
   res_addr = flash_search_adress(STARTADDR, BUFFSIZE * DATAWIDTH);
   read_last_data_in_flash(flash_buf);
   if ( ! check_empty_buf(flash_buf)){
-    set_halls_pos(flash_buf); // вдогонку
+    set_halls_pos(flash_buf);
   }
 
 
