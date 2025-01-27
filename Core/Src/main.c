@@ -212,7 +212,7 @@ int main(void)
         BLDC_next_hall_pos_combination();
       }
     }
-    
+    HAL_Delay(5);
   }
   /* USER CODE END 3 */
 }
