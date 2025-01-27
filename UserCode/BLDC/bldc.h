@@ -41,6 +41,10 @@ typedef enum {
     BLDC_RUN = 2
 } BLDC_Run;
 
+typedef struct {
+  uint8_t a, b, c;
+} hall_pos_t;
+
 
 // ==================== API ====================
 
@@ -71,8 +75,15 @@ void BLDC_forward (uint16_t speed);
 // run backward with speed (limited 88%) 
 void BLDC_backward (uint16_t speed);
 
+// ======================== HALLS POSITION ========================
+
+// get ptr to halls position struct. Save or Mutate
+hall_pos_t* BLDC_get_ptr_pos (); 
 // set next position of looped combination
 void BLDC_next_hall_pos_combination ();
 
+// ======================== UTILS ========================
+
+// change `x` from range `in_min`, `in_max` to range `out_min`, `out_max` and return
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 

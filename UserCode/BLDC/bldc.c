@@ -9,14 +9,18 @@ uint8_t forward_dir = 1;
 uint16_t speed = 0, target_speed = 0, max_speed = 8800;
 BLDC_Run bldc_run = BLDC_SOFT_STOP;
 
+
 uint8_t mask_halls_pos[2][3] = {
   {BLDC_HALL_A_pos, BLDC_HALL_B_pos, BLDC_HALL_C_pos},
   {BLDC_HALL_A_pos, BLDC_HALL_C_pos, BLDC_HALL_B_pos}
 };
 uint8_t triplet;
-struct {
-  uint8_t a, b, c;
-} hall_pos;
+hall_pos_t hall_pos;
+
+
+hall_pos_t* BLDC_get_ptr_pos (){
+  return &hall_pos;
+}
 
 // set next position combination 
 // combination is looped
