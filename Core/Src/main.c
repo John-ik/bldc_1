@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bldc.h"
+#include "FlashPROM.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,12 +47,17 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+// flash as eeprom
+uint32_t res_addr = 0;
+myBuf_t flash_buf[BUFFSIZE] = {0,};
+
 // adc
 uint16_t adc = 0;
 
 // button
-uint8_t flag_button = 1;
-uint32_t button_timer = 0; 
+uint8_t short_state = 0;
+uint8_t long_state = 0;
+uint32_t time_key1 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,6 +90,30 @@ filter_data_t filter_median3 (filter_median3_t* data, filter_data_t new_data){
     filter_data_t a = data->buf[0], b = data->buf[1], c = data->buf[2];
     return (a < b) ? ((b < c) ? b : ((c < a) ? a : c)) : ((a < c) ? a : ((c < b) ? b : c));
 }
+
+// true if empty
+uint8_t check_empty_buf (myBuf_t buf[BUFFSIZE]){
+  for (uint32_t i = 0; i < BUFFSIZE; i++){
+    if (buf[i] != 0)
+      return 0;
+  }
+  return 1;
+}
+
+void set_halls_pos (myBuf_t buf[BUFFSIZE]){
+  hall_pos_t* pos = BLDC_get_ptr_pos();
+  pos->a = buf[0];
+  pos->b = buf[1];
+  pos->c = buf[2];
+}
+
+void save_halls_pos (myBuf_t buf[BUFFSIZE]){
+  hall_pos_t* pos = BLDC_get_ptr_pos();
+  buf[0] = pos->a;
+  buf[1] = pos->b;
+  buf[2] = pos->c;
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -119,6 +149,19 @@ int main(void)
   MX_TIM2_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
+  // ----- RUN ONCE -----
+  erase_flash();
+  while (1){}
+  // ----- END ONCE ------
+
+  // search and read last data
+  res_addr = flash_search_adress(STARTADDR, BUFFSIZE * DATAWIDTH);
+  read_last_data_in_flash(flash_buf);
+  if ( ! check_empty_buf(flash_buf)){
+    set_halls_pos_from_buf(flash_buf);
+  }
+
+
   BLDC_init();
 
   HAL_ADCEx_Calibration_Start(&hadc1);
@@ -142,20 +185,34 @@ int main(void)
     BLDC_set_speed(speed);
 
     // button
-    if(HAL_GPIO_ReadPin(button_combination_GPIO_Port, button_combination_Pin) == GPIO_PIN_RESET && flag_button) // подставить свой пин
-    {
-      // действие на нажатие
-      BLDC_next_hall_pos_combination();
+    uint32_t ms = HAL_GetTick();
+    uint8_t key1_state = HAL_GPIO_ReadPin(button_combination_GPIO_Port, button_combination_Pin); // подставить свой пин
 
-      flag_button = 0;
-      button_timer = HAL_GetTick();
-    }
-    if(!flag_button && (HAL_GetTick() - button_timer) > 300)
+    if(key1_state == 0 && !short_state && (ms - time_key1) > 50) 
     {
-      flag_button = 1;
+      short_state = 1;
+      long_state = 0;
+      time_key1 = ms;
     }
+    else if(key1_state == 0 && !long_state && (ms - time_key1) > 2000) 
+    {
+      long_state = 1;
+      // действие на длинное нажатие
+      save_halls_pos(flash_buf);
+      write_to_flash(flash_buf);
+    }
+    else if(key1_state == 1 && short_state && (ms - time_key1) > 50) 
+    {
+      short_state = 0;
+      time_key1 = ms;
 
-    HAL_Delay(50);
+      if(!long_state)
+      {
+        // действие на короткое нажатие
+        BLDC_next_hall_pos_combination();
+      }
+    }
+    
   }
   /* USER CODE END 3 */
 }
